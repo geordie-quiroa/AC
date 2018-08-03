@@ -1,0 +1,155 @@
+\documentclass[10pt, letter]{report}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{xcolor}
+\color{darkgray}
+%\usepackage[T1]{fontenc}
+%\usepackage[sfdefault]{AlegreyaSans} %% Option 'black' gives heavier bold face
+%% The 'sfdefault' option to make the base font sans serif
+%\renewcommand*\oldstylenums[1]{{\AlegreyaSansOsF #1}}
+
+\usepackage[T1]{fontenc}
+\usepackage[ttdefault=true]{AnonymousPro}
+\renewcommand*\familydefault{\ttdefault} %% Only if the base font of the document is to be typewriter style
+\setlength{\parindent}{0.22cm}
+
+
+% Title Page
+\title{	Laboratorio 1 | Análisis Asintótico}
+\author{Geordie Quiroa}
+
+
+\begin{document}
+\maketitle
+
+%\part[short title]{title}
+%\chapter*{Problemas}
+\section*{1 - Problema de Búsqueda}
+Escribir en pseudocódigo un algoritmo de búsqueda lineal, que escanee la sequencia n y encuentre un valor v. Describir cuál es el loop invariant de su algoritmo para demostrar que es correcto. 
+
+\paragraph{Condiciones} \hspace{0pt} \\ % ~\\
+
+Input: Secuencia de n numeros A = [ a1 , a2 , a3, ... , an ], y el valor a buscar en dicho arreglo (v).
+
+Output: indice i tal que v = A[i] o nulo en caso de que el valor ingresado no se encuentre en el arreglo.
+
+
+\begin{algorithm}[H]
+	\caption{Busqueda Lineal}
+	\begin{algorithmic}[1]
+		\Procedure{Busqueda-Lineal}{$A, v$}
+		\State $n\gets a.length$
+		\If{$n//2 == 0 $}  **No tiene residuo
+			\State{$j=n/2$} 
+			\State{$i=j$}
+		\Else
+			\State{$i = (n/2).floor$}  
+			\State{$j = (n/2).up$}  
+		\EndIf
+		\For{$i \ \mathbf{downto}\ 1$}
+			\If{$ A[i] \ != v$}
+				\State{$i--$}
+			\ElsIf{$A[i] == v$}
+				\State{$\mathbf{Return (i)}$}
+				\State{$ \mathbf{Break}$}
+			\EndIf
+		\EndFor
+		\If{$n//2 == 0$}
+			\State{$ j \gets j+1 $} **Para que no evalue dos veces
+		\Else
+			\State{$ j \gets j $}
+		\EndIf	
+		\For{$j \ \mathbf{to}\ n$}
+		\If{$ A[j] \ != v $}
+		\State{$j++$}
+		\ElsIf{$A[j] == v$}
+		\State{$\mathbf{Return (j)}$}
+		\State{$ \mathbf{Break}$}
+		\Else
+		\State{$\mathbf{Return ("Value-Not-Found")}$}
+		\EndIf
+		\EndFor
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+\paragraph{Loop Invariant} ~\\
+Los valores que anteceden el índice i de los ciclos For, no son equivalentes al valor que se busca.  
+\section*{2 - Running Time\\*| Algoritmo de Multiplicación matricial}
+\paragraph{Condiciones} \hspace{0pt} \\ % ~\\
+~\\
+Input: matriz A (n x m) y matriz B (m x p) ~\\
+Output: matriz C (n x p)
+
+\begin{algorithm}[H]
+	\caption{Multiplicación Matricial}
+	\begin{algorithmic}[1]
+		\Procedure{Multiplicar-Mats}{$A(NxM), B(MxP)$}
+		\For{$i \gets 1 \ \mathbf{to}\ N$}
+			\For{$j \gets 1 \ \mathbf{to}\ P$}
+				\State{$\mathbf{Let}\ sum = 0$}
+				\For{$k \gets 1 \ \mathbf{to}\ M$}
+					\State{$\mathbf{Set}\ sum \gets sum + A[i][k] * B[k][j]$}
+				\EndFor
+				\State{$\mathbf{Set}\ C[i][j] <- sum$}
+			\EndFor
+		\EndFor
+		\State{$\mathbf{Return(C)}$}
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Comprobación Running Time} ~\\
+~\\El running time para el algoritmo de multiplicación de matrices no depende sólo de una variable sino de 3 (N, P y M) y las últimas dos forman parte una anidación de ciclos FOR, por lo que cada instrucción dentro del ciclo se ejecutará las veces que indica la variable del ciclo anidado por las veces que se ejecute la variable de los ciclos padre. Esto da como resultado un efecto en cadena, es decir, el ciclo mas interno se ejecutará NxPxM veces. De esta forma, el total de veces que las instrucciones de ese ciclo se van a ejecutar es el producto de las variables de los ciclos padre y del ciclo actual. Consecuentemente, el ciclo intermedio se ejecutará NxP veces y el ciclo principal se ejecutará N veces. Tomando en cuenta este efecto en cadena, el Running Time es el producto de las veces que se ejecuta cada instrucción de los ciclos: ~\\
+~\\ \centerline{\textbf{(N)+(NxP)+(NxPxM)}} ~\\ 
+En conclusión el algoritmo es de orden 3, debido a que el grado mayor del  Running Time resultante es cúbico. ~\\ 
+~\\ \centerline{$\mathbf{Running Time = \theta(N^3)} \ \ ; \ \ \theta(\mathbf{MxNxP})$} ~\\ 
+
+\section*{3 - Running Time\\*| Algoritmos: Insertion Sort y Bubble Sort}
+\paragraph{Condiciones} \hspace{0pt} \\ % ~\\
+~\\
+- Indicar el worst case del algoritmo Bubble Sort. ~\\
+- Comparar worst case y best case de los algoritmos Bubble Sort e Insertion Sort.
+
+\begin{algorithm}[H]
+	\caption{Bubble Sort Algorithm}
+	\begin{algorithmic}[1]
+		\Procedure{Bubble-Sort}{$S$}
+		\State{\bf{$S$} is an array of integers}	
+		\For{$i \gets 1 \ \mathbf{to}\ (S.length-1)$}
+			\For{$j \gets (i+1) \ \mathbf{to}\ S.length$}
+				\If{$ S[i] > S[j]$}
+					\State{$\mathbf{Swap}\ S[i] and S[j]$}
+				\EndIf
+			\EndFor
+		\EndFor
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{Insertion Sort Algorithm}
+	\begin{algorithmic}[1]
+		\Procedure{Insertion-Sort}{$A$}
+		\State{\bf{$A$} is an array of integers}	
+		\For{$j \gets 2 \ \mathbf{to}\ (A.length-1)$}
+		\State{\bf{// Insert A[j] into the sorted Sequence A[1..j-1]}}
+		\State{i = j-1}
+		\While{$i > 0 \ \mathbf{and}\ A[i]>key$}
+			\State{$A[i+1] = A[i]$}
+			\State{$i=i-1$}
+		\EndWhile
+		\State{$\mathbf{A[i+1] = key}$}
+		\EndFor
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+
+\paragraph{Análisis Running Time} ~\\
+~\\Worst case running time bubble sort: $\mathbf{\theta(N^2)}$
+~\\
+~\\
+El \textbf{best case y worst case running time de bubble sort} es el mismo en ambos casos; ya que no existe ninguna instrucción o condicional que evite que el ciclo interno FOR del ciclo padre FOR se ejecute n-1 veces. Por esta razón las instrucciones en el For interno se ejecutarán \textbf{(n-1)*(n-1)} veces independientemente del valor i y j. Dando como resultado $\mathbf{\theta{n^2}}$. De la misma forma, el \textbf{worst case running time de Insertion Sort} es de orden cuadrático, debido a que tendría que recorrer el arreglo con el subíndice j (n-1 veces) e irlo intercambiando con el subíndice i (n-1 veces). Sin embargo, el \textbf{best case de Insertion Sort} es diferente, ya que el ciclo while tiene condiciones con las cuales puede obviar las ejecuciones que contiene dependiendo de los valores de i y la desigualdad A[i] > key. Por lo tanto, el best case de éste es $\mathbf{\Omega{(n)}}$; escenario en el cual todos los valores se encuentran ordenados de manera no decreciente. 
+\end{document}          
