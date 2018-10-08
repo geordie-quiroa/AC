@@ -1,0 +1,44 @@
+\documentclass[10pt, letter]{report}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{xcolor}
+\color{darkgray}
+\usepackage[pdftex]{graphicx} % PDFLaTeX
+\DeclareGraphicsExtensions{.bmp,.png,.pdf,.jpg}
+%\usepackage[T1]{fontenc}
+%\usepackage[sfdefault]{AlegreyaSans} %% Option 'black' gives heavier bold face
+%% The 'sfdefault' option to make the base font sans serif
+%\renewcommand*\oldstylenums[1]{{\AlegreyaSansOsF #1}}
+
+\usepackage[T1]{fontenc}
+\usepackage[ttdefault=true]{AnonymousPro}
+\renewcommand*\familydefault{\ttdefault} %% Only if the base font of the document is to be typewriter style
+\setlength{\parindent}{0.22cm}
+
+
+% Title Page
+\title{	Laboratorio 7 | Análisis Amortizado}
+\author{Geordie Quiroa}
+
+
+\begin{document}
+\maketitle
+
+%\part[short title]{title}
+%\chapter*{Problemas}
+\section*{1 - Método de conteo}
+\subsection*{1.1 Operaciones sobre un stack de tamaño K}
+Sin utilizar el método de conteo, se determina que el costo real para cada operación sobre el stack; Push y Pop es 1, y para Multipop es, ya sea el tamaño del stack o el número de elementos a sacar (escogiendo el valor de menor magnitud) y se "pagan" al momento de realizar cada operación. Por otro lado, el método de conteo maneja los costos a través de créditos acumulativos y por lo general, una operación cobra el costo real de las demás operaciones más el costo propio, para que éstas otras, al utilizarse, cobren la operación a partir del crédito disponible. Es importante mencionar que los costos reales no cambian, lo que cambia es la forma en la que se cobran los costos reales, es decir, las operaciones no se pagan al momento de llevarse a cabo, sino que hubo una operación que pagó dicho costo. Para demostrar que, en este caso, el costo es $\mathbf{\theta(n)}$, se manejarán los siguientes costos para cada una de las operaciones; asumiendo que el stack inicia vacío: 
+\begin{itemize}
+	\item Push: 3
+	\item Pop: 0
+	\item MultiPop: 0
+\end{itemize} ~\\
+Esto quiere decir que por cada push realizado pagamos 3 unidades, de esas 3 unidades pagadas, se descuenta el costo real de la operación (1 unidad) y la diferencia (2) pasa a ser crédito para cubrir los costos reales de cualquier operación distinta a push. En el momento en el que el total de pushes sea igual al tamaño del stack (k), habremos pagado un total de 3*k unidades y nuestro crédito sería 3*k - k = k*(3-1) = 2*K unidades. Esto nos permite tener el crédito suficiente para cubrir el costo real de realizar el backup del stack (operaciones pop y push al stack del backup), ya que para realizar el backup es necesario realizar un pop para cada elemento del stack actual, representando un costo de k unidades, y un push de cada elemento al stack de backup; representando otro costo de k unidades, dichas operaciones realizadas consumieron el total de 2*k unidades de crédito que teníamos disponible. Consecuentemente, es posible concluir que el costo amortizado es $\mathbf{\theta(n)}$, ya que el costo real es el costo de llenar el stack menos el costo de realizar el backup: 3*k - 2*k = k, donde k es igual a n, por lo que $\mathbf{\theta(k)}$ = $\mathbf{\theta(n)}$.
+\section*{2 - Método potencial}
+\subsection*{2.1 Operaciones sobre un stack de tamaño K}
+Utilizando el método potencial, defino el potencial inicial del stack a 0, debido a que hay 0 elementos en él. Al momento de realizar un push, el costo real de la operación es 1, y la diferencia del potencial es 1 (debido a que es la diferencia entre el total de objetos que hay actualmente menos el total de objetos que había en la estructura previo a dicha operación.), lo que da como resultado, el costo amortizado de 2. (1 + 1 --> costo + delta potencial actual), por otro lado, el costo amortizado de pop y multipop va a ser igual a 0, debido a que el costo que representa es 1 o 1*k mas el delta del potencial actual y el potencial anterior el cual es igual a -1 o a -s dependiendo si es pop o multitpop. Debido a esto, el costo de realizar el backup del stack sería igual al total acumulado del costo amortizado, y este total es igual a n, siendo n el total operaciones realizadas.
+~\\
+\end{document}    
