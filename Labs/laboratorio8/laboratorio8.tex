@@ -1,0 +1,92 @@
+\documentclass[10pt, letter]{report}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{xcolor}
+\color{darkgray}
+%\usepackage[T1]{fontenc}
+%\usepackage[sfdefault]{AlegreyaSans} %% Option 'black' gives heavier bold face
+%% The 'sfdefault' option to make the base font sans serif
+%\renewcommand*\oldstylenums[1]{{\AlegreyaSansOsF #1}}
+
+\usepackage[T1]{fontenc}
+\usepackage[ttdefault=true]{AnonymousPro}
+\renewcommand*\familydefault{\ttdefault} %% Only if the base font of the document is to be typewriter style
+\setlength{\parindent}{0.22cm}
+
+
+% Title Page
+\title{	Laboratorio 8 | Algoritmos de grafos}
+\author{Geordie Quiroa}
+
+
+\begin{document}
+\maketitle
+
+%\part[short title]{title}
+%\chapter*{Problemas}
+\section*{1.1 - Complejidad de calcular out-degrees e in-degrees para listas de adyacencia}
+Las listas de adyacencia relaciona las aristas entre los nodos de un grafo dirgido, incluyen una lista que contiene todos los distintos nodos del grafo y a través de una lista adyacente se presentan las relaciones que existen para cada uno de los nodos del grafo, señalando que existe una relación entre ambos nodos. Debido a esta estructura de datos, encontrar el out-degree (los nodos con los que se relaciona el nodo en la lista de nodos del grafo) presenta una complejidad de $\mathcal{O(V + E)}$, ya que para encontrar los nodos a los que conecta cada nodo en la lista de nodos del grafo (n = V), hay que recorrer la lista de adyacencia para contar las aristas que existen para cada uno de ellos(n = E). Por lo tanto, el recorrido de cada nodo en la lista de nodos del grafo y el recorrido de la lista de adyacencia para contar las relaciones es (V + E). Por otro lado, la complejidad de calcular el in-degree para cada uno de los grafos es mayor, siendo ésta $\mathcal{O(V * E)}$, ya que para encontrar la cantidad de veces que un nodo aparece en las relaciones de los otros nodos del grafo es necesario recorrer, para cada uno de los nodos, las listas de adyacencia de los demás nodos que forman parte del grafo.\\
+\\
+\section*{1.2 - BFS o DFS según los siguientes escenarios}
+\paragraph{Encontrar más nodos en una red de blockchain}~\\
+Para este escenario utilizaría BFS, ya que si utilizara DFS existe la posibilidad de recorrer una cadena extremadamente larga, lo que retrasaría significativamente el proceso para encontrar nodos ajenos a la cadena que se está evaluando.~\\
+\paragraph{Desarrollar un crawler para un motor de búsqueda}~\\
+Para este escenario utilizaría BFS, con el fin de recorrer cada uno de los links que contienen las páginas por capas, es decir, no seguir profundizando en los links que contienen las otras páginas que provienen de los links descubiertos en la página anterior hasta concluir el "descubrimiento" de los links de la página anterior, y continuar de la misma forma para las siguientes "capas" de páginas.
+\paragraph{Encontrar la salida a un laberinto}~\\
+Si el laberinto tiene una sola entrada y una sola salida, utilizaría DFS, ya que habría que profundizar únicamente en una dirección, ahora si el laberinto presentara más de una salida, utilizaría BFS para encontrar ambas sin tener que recorrer el mismo camino necesariamente.
+\paragraph{Sistema de GPS para encontrar caminos de A a B}~\\
+Debido a que hay que encontrar más de un camino para el nodo destino (B), utilizaría BFS.
+\paragraph{Detectar un ciclo detro de un grafo}~\\
+Para detectar ciclos dentro de un grafo, utilizaría DFS, ya que la recursión de este algoritmo permite determinar si el nodo B, donde B es el nodo a visitar, en alguna parte de la recursión es igual al nodo inicial (A) o a algún nodo que ya fue visitado recursivamente.
+
+\section*{2 - BFS en matrices y listas de adyacencia}
+\paragraph{Matriz de adyacencia}~\\
+En el caso de utilizar BFS en una matriz de adyacencia, dicha estructura tendrá como mínimo un tamaño de V x V, siendo V los nodos que pertenecen al grafo, por lo que al recorrer dicha matriz capa por capa para cada una de las relaciones/posiciones en la matriz como lo hace BFS, hace que la complejidad de éste sea $\mathcal{O}(V^{2})$.
+
+\paragraph{Lista de adyacencia}~\\
+Por otro lado, en la utilización de listas de adyacencia, el recorrido de BFS a lo largo de la lista de los distintos nodos (V) que pertenecen al grafo y la lista adyacente de las aristas (E) para cada uno de ellos, da lugar a que la complejidad de éste sea $\mathcal{O(V + E)}$.
+
+\paragraph{Conclusión}~\\
+La estructura de datos más eficiente para implementar BFS es la estructura que utiliza listas de adyacencia.
+
+\section*{3.1 - Eliminación de recursión en DFS utilizando stacks}~\\
+
+\paragraph{Algoritmo DFS modificado} \hspace{0pt} \\ % ~\\
+
+\begin{algorithm}[H]
+	\caption{DFS with stack}
+	\begin{algorithmic}[1]
+		\Procedure{DFS}{$G$}
+		\State{stack $\gets$ [ ]}
+		\For{$each \ vertex \ u \in G.V$}
+			\State{u.color $\gets$ white}
+		\EndFor
+		\State{ i $\gets$ rand vertex $\in$ G.V}
+		\State{ i.color $\gets$ gray}		
+		\State{ Push to stack $\gets$ i }
+		\While{stack.length != (G.V).length}
+		\For{each vertex  u $\in$ G.V}
+			\If{u.color $==$ white}
+				\State{u.color $\gets$ gray}
+				\State{Push to stack $\gets$ u}
+				\For{each vertex  v $\in$ Adj[u]}
+					\If{v.color $==$ white}
+						\State{v.color $\gets$ gray}
+						\State{v.parent $\gets$ u}
+						\State{Push to stack $\gets$ v}
+					\EndIf
+				\EndFor
+			\EndIf
+		\EndFor
+		\EndWhile
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+\section*{3.2 - razón por la que un vértice u termina dentro del dft}
+\paragraph{} ~\\
+La razón por la que un vertice u de un grafo dirigido puede terminar dentro del "depth-first tree" que contenga solo u, aunque u tenga aristas saliendo y entrando en el grafo G, es que este vértice u sea el último en la lista de nodos del grafo y los nodos en la lista de adyacencia para u ya hayan sido descubiertos. 
+
+
+\end{document}     
